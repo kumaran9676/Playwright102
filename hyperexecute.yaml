@@ -1,0 +1,39 @@
+version: "0.1"
+
+matrix:
+  os: [win, linux]
+
+runson: ${matrix.os}
+concurrency: 2
+
+env:
+  CI: "true"
+  HYPEREXECUTE: "true"
+  TARGET_OS: ${matrix.os}
+  LT_USERNAME: ${{.secrets.LT_USERNAME}}
+  LT_ACCESS_KEY: ${{.secrets.LT_ACCESS_KEY}}
+  FORM_PASSWORD: ${{.secrets.FORM_PASSWORD}}
+  BASE_URL: https://www.testmuai.com/selenium-playground/
+  TEST_MESSAGE: Welcome to TestMu AI from HyperExecute
+  PLAYWRIGHT_BROWSERS_PATH: .playwright-browsers
+
+pre:
+  - npm ci --cache .npm --prefer-offline --no-audit
+  - npx playwright install ffmpeg
+
+cacheKey: '{{ checksum "package-lock.json" }}'
+cacheDirectories:
+  - .npm
+  - .playwright-browsers
+
+testSuites:
+  - node node_modules/@playwright/test/cli.js test --workers=1
+
+mergeArtifacts: true
+uploadArtefacts:
+  - name: playwright-102-$os
+    path:
+      - playwright-report/**
+      - test-results/**
+
+jobLabel: [playwright-102, chrome-latest, windows-linux]

@@ -1,0 +1,10 @@
+node_modules/
+.npm/
+.playwright-browsers/
+playwright-report/
+test-results/
+artifacts/
+.env
+hyperexecute.exe
+.git/
+.hyperexecute/

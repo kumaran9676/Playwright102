@@ -1,0 +1,8 @@
+{"level":"error","time":"2026-10-27T18:44:26.899+0530","caller":"globalconfigvalidator/setup.go:54","msg":"2026-10-27T18:44:26+05:30    error    \u001b[91mERR::NO::USER\u001b[0m     Unable to find LT username.    Unable to parse LT username. Use --user cli flag or LT_USERNAME environment variable"}
+{"level":"error","time":"2026-10-27T18:44:26.901+0530","caller":"cmd/bin.go:120","msg":"2026-10-27T18:44:26+05:30    error    \u001b[91mERR::NO::USER\u001b[0m     Unable to find LT username."}
+{"level":"debug","time":"2026-10-27T18:48:50.753+0530","caller":"cmd/bin.go:138","msg":"cli os: windows, cli arch: amd64"}
+{"level":"debug","time":"2026-10-27T18:48:50.755+0530","caller":"cmd/bin.go:139","msg":"Current binary version: 0.2.363, Environment: prod"}
+{"level":"error","time":"2026-10-27T18:48:51.491+0530","caller":"cmd/bin.go:145","msg":"2026-10-27T18:48:49+05:30    error    \u001b[91mERR::UP::VER\u001b[0m     Unable to fetch latest version from upstream  assetversion: get cli version: bad request"}
+{"level":"debug","time":"2026-10-28T13:02:51.701+0530","caller":"cmd/bin.go:138","msg":"cli os: windows, cli arch: amd64"}
+{"level":"debug","time":"2026-10-28T13:02:51.701+0530","caller":"cmd/bin.go:139","msg":"Current binary version: 0.2.363, Environment: prod"}
+{"level":"error","time":"2026-10-28T13:02:52.519+0530","caller":"cmd/bin.go:145","msg":"2026-10-28T13:02:50+05:30    error    \u001b[91mERR::UP::VER\u001b[0m     Unable to fetch latest version from upstream  assetversion: get cli version: bad request"}

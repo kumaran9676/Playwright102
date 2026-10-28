@@ -1,0 +1,70 @@
+name: Playwright 102 - HyperExecute
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/hyperexecute.yml
+      - hyperexecute.yaml
+      - .hyperexecuteignore
+      - package.json
+      - package-lock.json
+      - playwright.config.js
+      - tests/**
+
+permissions:
+  contents: read
+
+jobs:
+  hyperexecute:
+    name: Chrome on Windows and Linux
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LT_USERNAME: ${{ secrets.LT_USERNAME }}
+      LT_ACCESS_KEY: ${{ secrets.LT_ACCESS_KEY }}
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v4
+
+      - name: Check required GitHub secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          for variable in LT_USERNAME LT_ACCESS_KEY; do
+            if [ -z "${!variable}" ]; then
+              echo "::error::Add the repository Actions secret ${variable} before running this workflow."
+              exit 1
+            fi
+          done
+
+      - name: Download HyperExecute CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 3 \
+            https://downloads.lambdatest.com/hyperexecute/linux/hyperexecute \
+            --output "$RUNNER_TEMP/hyperexecute"
+          chmod +x "$RUNNER_TEMP/hyperexecute"
+
+      - name: Run the Playwright Windows and Linux matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/hyperexecute" \
+            --disable-updates \
+            --config "$GITHUB_WORKSPACE/hyperexecute.yaml" \
+            --download-artifacts \
+            --download-artifacts-zip \
+            --download-artifacts-path "$GITHUB_WORKSPACE/artifacts" \
+            --download-logs
+
+      - name: Upload downloaded execution artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-102-hyperexecute-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 7

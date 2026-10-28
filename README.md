@@ -74,10 +74,39 @@ To configure the same values locally, set BASE_URL, TEST_MESSAGE, or FORM_PASSWO
 in the terminal environment before npm.cmd test. Without FORM_PASSWORD, local
 tests generate a disposable random test value. Cloud runs require the vault value.
 
-Optional post-steps and GitHub Actions are intentionally omitted.
+## GitHub Actions
+
+The workflow .github/workflows/hyperexecute.yml submits this repository's
+hyperexecute.yaml, not the Java sample discovery configuration. It runs on pushes
+to main affecting the suite or workflow, and can also be started manually.
+
+1. In https://github.com/kumaran9676/Playwright102/settings/secrets/actions,
+   add repository secrets LT_USERNAME and LT_ACCESS_KEY. Use a rotated access key.
+2. CI supplies LT_USERNAME and LT_ACCESS_KEY from GitHub secrets and generates a
+   disposable FORM_PASSWORD. It writes all three to a restricted temporary file
+   outside the repository and supplies it through --job-secret-file. The YAML
+   resolves these job-scoped secrets through its existing secrets references;
+   CI deletes the temporary file when the command exits. No separate dashboard
+   secret setup is needed for CI. Manual CLI runs still require the dashboard
+   vault secrets described above.
+3. Publish .github/workflows/hyperexecute.yml and this README to the main branch.
+4. Open https://github.com/kumaran9676/Playwright102/actions, select
+   "Playwright 102 - HyperExecute", and choose "Run workflow" if a push has not
+   already triggered it.
+5. Open the "Run the Playwright Windows and Linux matrix" step for the new
+   HyperExecute job link. Download the combined artifacts from that job's dashboard
+   or the workflow's artifact attachment.
+
+The failed Java-discovery job 1e717749-d9e0-4931-9f98-5f932f34cea1 is historical:
+it cannot be converted into a passing run by changing this repository. A new job
+must run the actual Playwright tests successfully. The workflow propagates CLI
+failures and does not force a green result. Optional post-steps remain omitted.
 
 ## Verification Status
 
 Local scenario runs have passed. Cloud execution and the combined downloadable
 artifact require authenticated HyperExecute execution; configuration alone is not
-proof of a completed cloud run. Test failures remain failures and retain artifacts.
+proof of a completed cloud run. The GitHub workflow must be published and supplied
+with secrets before CI can run. See the GitHub Actions run and its linked
+HyperExecute job for the actual execution result. Test failures remain failures
+and retain artifacts.

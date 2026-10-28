@@ -55,7 +55,8 @@ jobs:
           umask 077
           jobSecretFile="$RUNNER_TEMP/hyperexecute-job-secrets.txt"
           trap 'rm -f "$jobSecretFile"' EXIT
-          printf 'FORM_PASSWORD=%s\n' "$(openssl rand -hex 24)" > "$jobSecretFile"
+          printf 'LT_USERNAME=%s\nLT_ACCESS_KEY=%s\nFORM_PASSWORD=%s\n' \
+            "$LT_USERNAME" "$LT_ACCESS_KEY" "$(openssl rand -hex 24)" > "$jobSecretFile"
           "$RUNNER_TEMP/hyperexecute" \
             --disable-updates \
             --config "$GITHUB_WORKSPACE/hyperexecute.yaml" \

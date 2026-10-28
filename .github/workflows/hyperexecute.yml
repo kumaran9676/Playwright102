@@ -52,9 +52,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          umask 077
+          jobSecretFile="$RUNNER_TEMP/hyperexecute-job-secrets.txt"
+          trap 'rm -f "$jobSecretFile"' EXIT
+          printf 'FORM_PASSWORD=%s\n' "$(openssl rand -hex 24)" > "$jobSecretFile"
           "$RUNNER_TEMP/hyperexecute" \
             --disable-updates \
             --config "$GITHUB_WORKSPACE/hyperexecute.yaml" \
+            --job-secret-file "$jobSecretFile" \
             --download-artifacts \
             --download-artifacts-zip \
             --download-artifacts-path "$GITHUB_WORKSPACE/artifacts" \
